@@ -60,7 +60,22 @@ let gameOver = false;
 
 let playAgainButton = { x: canvas.width / 2 - 60, y: canvas.height / 2 + 30, width: 120, height: 40, text: 'Play Again' };
 
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
 
+canvas.addEventListener('touchstart', function(event) {
+    const touch = event.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    touchStartX = touch.clientX - rect.left;
+    touchStartY = touch.clientY - rect.top;
+    touchStartTime = new Date().getTime();
+});
+
+canvas.addEventListener('touchend', function(event) {
+    const touchDuration = new Date().getTime() - touchStartTime;
+    createProjectile(touchStartX, touchStartY, touchDuration);
+});
 
 function drawUpgradeButton() {
     if (!isDoubleShotEnabled && score >= doubleShotUpgradeCost) {
@@ -90,14 +105,14 @@ canvas.addEventListener('click', function(event) {
     handleUpgradeClick(x, y);
 });
 
-canvas.addEventListener('touchstart', function(event) {
-    const touch = event.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    handleUpgradeClick(x, y);
-    event.preventDefault(); // Prevent scrolling on touch
-});
+// canvas.addEventListener('touchstart', function(event) {
+//     const touch = event.touches[0];
+//     const rect = canvas.getBoundingClientRect();
+//     const x = touch.clientX - rect.left;
+//     const y = touch.clientY - rect.top;
+//     handleUpgradeClick(x, y);
+//     event.preventDefault(); // Prevent scrolling on touch
+// });
 
 function updateSpawnInterval() {
     const timeElapsed = Date.now() - startTime;
@@ -140,12 +155,12 @@ function createProjectile(x, y, timeHeld) {
         y: slingshot.y,
         vx: Math.cos(angle) * projectileSpeed,
         vy: Math.sin(angle) * projectileSpeed,
-        power: power // Store the power level of the projectile
+        power: power
     });
+    // Handle double shot if enabled
     if (isDoubleShotEnabled) {
-        // Create a second projectile with a slight offset
         projectiles.push({
-            x: slingshot.x + 20, // Offset for the second shot
+            x: slingshot.x + 20,
             y: slingshot.y,
             vx: Math.cos(angle) * projectileSpeed,
             vy: Math.sin(angle) * projectileSpeed,
@@ -353,25 +368,25 @@ canvas.addEventListener('click', function(event) {
 
 gameLoop();
 
-function isMobileDevice() {
-    return /Mobi|Android/i.test(navigator.userAgent);
-}
+// function isMobileDevice() {
+//     return /Mobi|Android/i.test(navigator.userAgent);
+// }
 
-function resizeCanvas() {
-    if (isMobileDevice()) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    } else {
-        // Fixed size for desktop
-        canvas.width = 400; // or any other fixed size you prefer
-        canvas.height = 600;
-    }
-    // Additional logic to adjust game elements based on new canvas size
-}
+// function resizeCanvas() {
+//     if (isMobileDevice()) {
+//         canvas.width = window.innerWidth;
+//         canvas.height = window.innerHeight;
+//     } else {
+//         // Fixed size for desktop
+//         canvas.width = 400; // or any other fixed size you prefer
+//         canvas.height = 600;
+//     }
+//     // Additional logic to adjust game elements based on new canvas size
+// }
 
-// Set initial canvas size and adjust on resize
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+// // Set initial canvas size and adjust on resize
+// resizeCanvas();
+// window.addEventListener('resize', resizeCanvas);
 
     </script>
 </body>
