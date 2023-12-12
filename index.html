@@ -8,6 +8,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            touch-action: none; /* Prevents scrolling */
+    user-select: none; /* Prevents text selection */
         }
 
         #gameCanvas {
@@ -65,17 +67,23 @@ let touchStartY = 0;
 let touchStartTime = 0;
 
 canvas.addEventListener('touchstart', function(event) {
+    event.preventDefault();
     const touch = event.touches[0];
     const rect = canvas.getBoundingClientRect();
     touchStartX = touch.clientX - rect.left;
     touchStartY = touch.clientY - rect.top;
     touchStartTime = new Date().getTime();
-});
+}, { passive: false });
 
 canvas.addEventListener('touchend', function(event) {
+    event.preventDefault();
     const touchDuration = new Date().getTime() - touchStartTime;
     createProjectile(touchStartX, touchStartY, touchDuration);
-});
+}, { passive: false });
+
+canvas.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+z}, { passive: false });
 
 function drawUpgradeButton() {
     if (!isDoubleShotEnabled && score >= doubleShotUpgradeCost) {
